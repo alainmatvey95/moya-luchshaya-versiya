@@ -3,1001 +3,180 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Моя лучшая версия</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
 
-    body {
-        margin: 0;
-        padding: 20px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: #fff7fb;
-        color: #4b3b43;
-    }
-
-    .app {
-        max-width: 600px;
-        margin: auto;
-    }
-
-    h1 {
-        text-align: center;
-        color: #d77da5;
-        margin-bottom: 5px;
-    }
-
-    .date {
-        text-align: center;
-        color: #8f7c85;
-        margin-bottom: 20px;
-    }
-
-    .card {
-        background: white;
-        border-radius: 20px;
-        padding: 20px;
-        margin-bottom: 16px;
-        box-shadow: 0 5px 20px rgba(150, 100, 130, 0.08);
-    }
-
-    .progress-title {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-        font-weight: 600;
-    }
-
-    .progress-bar {
-        height: 14px;
-        background: #f1e5eb;
-        border-radius: 20px;
-        overflow: hidden;
-    }
-
-    .progress-fill {
-        height: 100%;
-        width: 0%;
-        background: linear-gradient(90deg, #e99abd, #d77da5);
-        border-radius: 20px;
-        transition: width 0.3s ease;
-    }
-
-    .last-time {
-        margin-top: 9px;
-        font-size: 13px;
-        color: #96838c;
-    }
-
-    .reminder {
-        background: #fff0f6;
-        border: 1px solid #f4c9da;
-        border-radius: 15px;
-        padding: 14px;
-        margin-top: 15px;
-        line-height: 1.5;
-    }
-
-    .reminder.done {
-        background: #f0faf4;
-        border-color: #c8e8d3;
-    }
-
-    .field {
-        margin-bottom: 18px;
-    }
-
-    label {
-        display: block;
-        font-weight: 600;
-        margin-bottom: 8px;
-    }
-
-    input[type="number"],
-    input[type="text"],
-    textarea {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #eadce3;
-        border-radius: 12px;
-        font-size: 16px;
-        outline: none;
-    }
-
-    textarea {
-        min-height: 90px;
-        resize: vertical;
-    }
-
-    input:focus,
-    textarea:focus {
-        border-color: #d77da5;
-    }
-
-    .checkbox {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: normal;
-    }
-
-    .checkbox input {
-        width: 20px;
-        height: 20px;
-    }
-
-    button {
-        width: 100%;
-        border: none;
-        border-radius: 14px;
-        padding: 14px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        margin-top: 8px;
-    }
-
-    .save {
-        background: #d77da5;
-        color: white;
-    }
-
-    .save:hover {
-        background: #c96f99;
-    }
-
-    .delete {
-        background: #fff;
-        color: #b45b7d;
-        border: 1px solid #e7b9cb;
-    }
-
-    .notes {
-        margin-top: 10px;
-    }
-
-    .note {
-        padding: 10px 0;
-        border-bottom: 1px solid #f1e7ec;
-        font-size: 14px;
-    }
-
-    .note:last-child {
-        border-bottom: none;
-    }
-
-    .report-entry {
-        padding: 15px 0;
-        border-bottom: 1px solid #eee2e8;
-    }
-
-    .report-entry:last-child {
-        border-bottom: none;
-    }
-
-    .small {
-        color: #95848c;
-        font-size: 13px;
-    }
-
-    .empty {
-        text-align: center;
-        color: #9a8991;
-        padding: 10px;
-    }
-</style>
-</head>
-
-<body>
-
-<div class="app">
-
-    <h1>🌸 Моя лучшая версия</h1>
-    <div class="date" id="currentDate"></div>
-
-    <!-- ПРОГРЕСС -->
-    <div class="card">
-
-        <div class="progress-title">
-            <span>🌸 Прогресс дня</span>
-            <span id="progressPercent">0%</span>
-        </div>
-
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
-        </div>
-
-        <div class="last-time" id="lastTime">
-            🕐 Пока нет заполнений
-        </div>
-
-        <div class="reminder" id="reminder">
-            🔔 <strong>Сегодня ещё не всё заполнено</strong>
-            <div id="remainingItems"></div>
-        </div>
-
-    </div>
-
-    <!-- ФОРМА -->
-    <div class="card">
-
-        <div class="field">
-            <label>😊 Настроение: <span id="moodValue">5</span>/10</label>
-            <input
-                type="range"
-                id="mood"
-                min="1"
-                max="10"
-                value="5"
-                style="width:100%;"
-            >
-        </div>
-
-        <div class="field">
-            <label>😴 Сон</label>
-            <input
-                type="number"
-                id="sleep"
-                min="0"
-                max="24"
-                step="0.5"
-                placeholder="Количество часов"
-            >
-        </div>
-
-        <div class="field">
-            <label class="checkbox">
-                <input type="checkbox" id="water">
-                💧 Вода
-            </label>
-        </div>
-
-        <div class="field">
-            <label class="checkbox">
-                <input type="checkbox" id="vitamins">
-                💊 Витамины
-            </label>
-        </div>
-
-        <div class="field">
-            <label class="checkbox">
-                <input type="checkbox" id="care">
-                💄 Уход
-            </label>
-        </div>
-
-        <div class="field">
-            <label class="checkbox">
-                <input type="checkbox" id="food">
-                🍎 Питание
-            </label>
-        </div>
-
-        <div class="field">
-            <label>📝 Заметка</label>
-            <textarea
-                id="note"
-                placeholder="Что хочется сохранить в отчёте за сегодня?"
-            ></textarea>
-        </div>
-
-        <button class="save" onclick="saveEntry()">
-            💾 Сохранить / отправить отчёт
-        </button>
-
-        <button class="delete" onclick="deleteLastEntry()">
-            🗑️ Удалить предыдущую запись
-        </button>
-
-    </div>
-
-    <!-- ЗАМЕТКИ ТЕКУЩЕГО ДНЯ -->
-    <div class="card">
-
-        <h3>📝 Заметки за сегодня</h3>
-
-        <div id="todayNotes" class="notes">
-            <div class="empty">Пока заметок нет</div>
-        </div>
-
-    </div>
-
-    <!-- ОТЧЁТ -->
-    <div class="card">
-
-        <h3>📋 Отчёт дня</h3>
-
-        <div id="report">
-            <div class="empty">Пока сохранённых записей нет</div>
-        </div>
-
-    </div>
-
-</div>
-
-<script>
-
-const STORAGE_KEY = "best_version_diary";
-
-const today = getToday();
-
-document.getElementById("currentDate").textContent =
-    formatDate(today);
-
-let data = loadData();
-
-let currentDay = data.days[today];
-
-if (!currentDay) {
-    currentDay = {
-        entries: [],
-        notes: [],
-        current: null,
-        finalized: false
-    };
-
-    data.days[today] = currentDay;
-    saveData();
+* {
+    box-sizing: border-box;
 }
 
-
-/* =========================
-   ДАТА
-========================= */
-
-function getToday() {
-    const d = new Date();
-
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #fff7fb;
+    color: #4b3b43;
 }
 
-
-function formatDate(dateString) {
-    const parts = dateString.split("-");
-
-    return `${parts[2]}.${parts[1]}.${parts[0]}`;
+.app {
+    max-width: 600px;
+    margin: auto;
 }
 
-
-/* =========================
-   ХРАНИЛИЩЕ
-========================= */
-
-function loadData() {
-
-    try {
-
-        const saved = localStorage.getItem(STORAGE_KEY);
-
-        if (!saved) {
-            return {
-                days: {}
-            };
-        }
-
-        return JSON.parse(saved);
-
-    } catch (error) {
-
-        console.error("Ошибка загрузки:", error);
-
-        return {
-            days: {}
-        };
-    }
+h1 {
+    text-align: center;
+    color: #d77da5;
+    margin-bottom: 5px;
 }
 
-
-function saveData() {
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(data)
-    );
+.date {
+    text-align: center;
+    color: #8f7c85;
+    margin-bottom: 20px;
 }
 
+/* КАРТОЧКИ */
 
-/* =========================
-   НАСТРОЕНИЕ
-========================= */
-
-document.getElementById("mood").addEventListener("input", function() {
-
-    document.getElementById("moodValue").textContent =
-        this.value;
-
-    updateProgressPreview();
-
-});
-
-
-/* =========================
-   ПРОГРЕСС
-========================= */
-
-function calculateProgress(entry) {
-
-    if (!entry) {
-        return 0;
-    }
-
-    let completed = 0;
-
-    /*
-       5 основных пунктов дают по 20%:
-
-       настроение
-       сон
-       вода
-       витамины
-       уход
-       питание
-
-       Чтобы получить 100%, нужны все 6.
-    */
-
-    if (entry.mood !== null && entry.mood !== undefined) {
-        completed++;
-    }
-
-    if (entry.sleep !== "" &&
-        entry.sleep !== null &&
-        entry.sleep !== undefined) {
-        completed++;
-    }
-
-    if (entry.water) {
-        completed++;
-    }
-
-    if (entry.vitamins) {
-        completed++;
-    }
-
-    if (entry.care) {
-        completed++;
-    }
-
-    if (entry.food) {
-        completed++;
-    }
-
-    return Math.round((completed / 6) * 100);
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 5px 20px rgba(150,100,130,.08);
 }
 
+/* ПРОГРЕСС */
 
-/* =========================
-   ТЕКУЩЕЕ СОСТОЯНИЕ
-========================= */
-
-function getFormData() {
-
-    return {
-
-        mood:
-            Number(document.getElementById("mood").value),
-
-        sleep:
-            document.getElementById("sleep").value,
-
-        water:
-            document.getElementById("water").checked,
-
-        vitamins:
-            document.getElementById("vitamins").checked,
-
-        care:
-            document.getElementById("care").checked,
-
-        food:
-            document.getElementById("food").checked
-    };
+.progress-title {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    margin-bottom: 10px;
 }
 
-
-function updateProgressPreview() {
-
-    const entry = getFormData();
-
-    const progress = calculateProgress(entry);
-
-    showProgress(progress);
-
+.progress-bar {
+    height: 14px;
+    background: #f1e5eb;
+    border-radius: 20px;
+    overflow: hidden;
 }
 
-
-/* =========================
-   ОТОБРАЖЕНИЕ ПРОГРЕССА
-========================= */
-
-function showProgress(progress) {
-
-    document.getElementById("progressPercent")
-        .textContent = `${progress}%`;
-
-    document.getElementById("progressFill")
-        .style.width = `${progress}%`;
-
-    updateReminder(progress);
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg,#e99abd,#d77da5);
+    border-radius: 20px;
+    transition: .3s;
 }
 
-
-function updateReminder(progress) {
-
-    const reminder =
-        document.getElementById("reminder");
-
-    const remaining =
-        document.getElementById("remainingItems");
-
-    if (progress >= 100) {
-
-        reminder.classList.add("done");
-
-        remaining.innerHTML =
-            "🎉 Всё заполнено! Можно сохранить итоговый отчёт дня.";
-
-        return;
-    }
-
-    reminder.classList.remove("done");
-
-    const entry = getFormData();
-
-    const missing = [];
-
-    if (entry.mood === null || entry.mood === undefined) {
-        missing.push("😊 настроение");
-    }
-
-    if (entry.sleep === "" ||
-        entry.sleep === null ||
-        entry.sleep === undefined) {
-        missing.push("😴 сон");
-    }
-
-    if (!entry.water) {
-        missing.push("💧 вода");
-    }
-
-    if (!entry.vitamins) {
-        missing.push("💊 витамины");
-    }
-
-    if (!entry.care) {
-        missing.push("💄 уход");
-    }
-
-    if (!entry.food) {
-        missing.push("🍎 питание");
-    }
-
-    remaining.innerHTML =
-        "Осталось отметить: " +
-        missing.join(", ");
+.last-time {
+    margin-top: 9px;
+    font-size: 13px;
+    color: #96838c;
 }
 
+/* НАПОМИНАНИЕ */
 
-/* =========================
-   СОХРАНЕНИЕ
-========================= */
-
-function saveEntry() {
-
-    const entry = getFormData();
-
-    const note =
-        document.getElementById("note").value.trim();
-
-    const progress =
-        calculateProgress(entry);
-
-    const now = new Date();
-
-    const time =
-        now.toLocaleTimeString("ru-RU", {
-            hour: "2-digit",
-            minute: "2-digit"
-        });
-
-
-    /*
-       Создаём снимок состояния.
-
-       Каждое отправление сохраняется
-       как одна отдельная запись.
-    */
-
-    const savedEntry = {
-
-        ...entry,
-
-        progress,
-
-        time,
-
-        note,
-
-        timestamp:
-            now.getTime()
-    };
-
-
-    currentDay.entries.push(savedEntry);
-
-
-    /*
-       Заметка хранится отдельно,
-       чтобы все заметки дня сохранялись.
-    */
-
-    if (note) {
-
-        currentDay.notes.push({
-
-            text: note,
-
-            time,
-
-            timestamp:
-                now.getTime()
-        });
-
-    }
-
-
-    /*
-       Текущее состояние дня
-       обновляется последней записью.
-    */
-
-    currentDay.current =
-        savedEntry;
-
-
-    saveData();
-
-
-    /*
-       После отправки очищаем форму,
-       НО данные дня НЕ удаляем.
-    */
-
-    clearForm();
-
-
-    render();
-
-
-    alert(
-        `Запись сохранена 🌸\nПрогресс дня: ${progress}%`
-    );
+.reminder {
+    background: #fff0f6;
+    border: 1px solid #f4c9da;
+    border-radius: 15px;
+    padding: 14px;
+    margin-top: 15px;
+    line-height: 1.5;
 }
 
-
-/* =========================
-   ОЧИСТКА ФОРМЫ
-========================= */
-
-function clearForm() {
-
-    document.getElementById("mood").value = 5;
-    document.getElementById("moodValue").textContent = 5;
-
-    document.getElementById("sleep").value = "";
-
-    document.getElementById("water").checked = false;
-
-    document.getElementById("vitamins").checked = false;
-
-    document.getElementById("care").checked = false;
-
-    document.getElementById("food").checked = false;
-
-    document.getElementById("note").value = "";
-
+.reminder.done {
+    background: #f0faf4;
+    border-color: #c8e8d3;
 }
 
+/* ПЕРИОДЫ */
 
-/* =========================
-   УДАЛЕНИЕ ПОСЛЕДНЕЙ ЗАПИСИ
-========================= */
-
-function deleteLastEntry() {
-
-    if (!currentDay.entries.length) {
-
-        alert("Удалять пока нечего 🌸");
-
-        return;
-    }
-
-
-    const confirmed =
-        confirm(
-            "Удалить только последнюю запись?\n\n" +
-            "Остальные записи и дни останутся."
-        );
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    /*
-       Удаляем ТОЛЬКО последнюю запись.
-    */
-
-    const deleted =
-        currentDay.entries.pop();
-
-
-    /*
-       Если у удалённой записи была заметка,
-       удаляем только её.
-    */
-
-    if (deleted.note) {
-
-        for (
-            let i = currentDay.notes.length - 1;
-            i >= 0;
-            i--
-        ) {
-
-            if (
-                currentDay.notes[i].timestamp ===
-                deleted.timestamp
-            ) {
-
-                currentDay.notes.splice(i, 1);
-
-                break;
-            }
-        }
-    }
-
-
-    /*
-       Последняя оставшаяся запись
-       становится текущей.
-    */
-
-    if (currentDay.entries.length) {
-
-        currentDay.current =
-            currentDay.entries[
-                currentDay.entries.length - 1
-            ];
-
-    } else {
-
-        currentDay.current = null;
-    }
-
-
-    saveData();
-
-    render();
-
-
-    alert(
-        "Последняя запись удалена 🗑️\n" +
-        "Остальные данные остались."
-    );
+.periods {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 10px;
 }
 
-
-/* =========================
-   РЕНДЕР
-========================= */
-
-function render() {
-
-    const last =
-        currentDay.current;
-
-
-    if (last) {
-
-        showProgress(
-            calculateProgress(last)
-        );
-
-
-        document.getElementById("lastTime")
-            .textContent =
-            `🕐 Последнее заполнение: ${last.time}`;
-
-    } else {
-
-        showProgress(0);
-
-        document.getElementById("lastTime")
-            .textContent =
-            "🕐 Пока нет сохранённых заполнений";
-    }
-
-
-    renderNotes();
-
-    renderReport();
+.period-button {
+    background: #fff;
+    border: 2px solid #eadce3;
+    border-radius: 16px;
+    padding: 14px 8px;
+    font-size: 15px;
+    cursor: pointer;
 }
 
-
-/* =========================
-   ЗАМЕТКИ
-========================= */
-
-function renderNotes() {
-
-    const container =
-        document.getElementById("todayNotes");
-
-
-    if (!currentDay.notes.length) {
-
-        container.innerHTML =
-            '<div class="empty">Пока заметок нет</div>';
-
-        return;
-    }
-
-
-    container.innerHTML =
-        currentDay.notes
-            .map(note => {
-
-                return `
-                    <div class="note">
-                        📝 ${escapeHtml(note.text)}
-                        <div class="small">
-                            ${note.time}
-                        </div>
-                    </div>
-                `;
-
-            })
-            .join("");
+.period-button.active {
+    border-color: #d77da5;
+    background: #fff0f6;
 }
 
-
-/* =========================
-   ОТЧЁТ
-========================= */
-
-function renderReport() {
-
-    const container =
-        document.getElementById("report");
-
-
-    if (!currentDay.entries.length) {
-
-        container.innerHTML =
-            '<div class="empty">Пока сохранённых записей нет</div>';
-
-        return;
-    }
-
-
-    container.innerHTML =
-        currentDay.entries
-            .map((entry, index) => {
-
-                return `
-                    <div class="report-entry">
-
-                        <strong>
-                            Запись ${index + 1}
-                        </strong>
-
-                        <div class="small">
-                            🕐 ${entry.time}
-                        </div>
-
-                        <p>
-                            😊 Настроение:
-                            ${entry.mood}/10
-                        </p>
-
-                        <p>
-                            😴 Сон:
-                            ${entry.sleep || "—"} ч
-                        </p>
-
-                        <p>
-                            💧 Вода:
-                            ${entry.water ? "✓" : "—"}
-                        </p>
-
-                        <p>
-                            💊 Витамины:
-                            ${entry.vitamins ? "✓" : "—"}
-                        </p>
-
-                        <p>
-                            💄 Уход:
-                            ${entry.care ? "✓" : "—"}
-                        </p>
-
-                        <p>
-                            🍎 Питание:
-                            ${entry.food ? "✓" : "—"}
-                        </p>
-
-                        ${
-                            entry.note
-                            ? `
-                                <p>
-                                    📝 ${escapeHtml(entry.note)}
-                                </p>
-                              `
-                            : ""
-                        }
-
-                        <strong>
-                            🌸 Прогресс:
-                            ${entry.progress}%
-                        </strong>
-
-                    </div>
-                `;
-
-            })
-            .join("");
+.period-button.completed {
+    border-color: #b9dfc6;
+    background: #f2faf5;
 }
 
-
-/* =========================
-   ЗАЩИТА ТЕКСТА
-========================= */
-
-function escapeHtml(text) {
-
-    const div =
-        document.createElement("div");
-
-    div.textContent = text;
-
-    return div.innerHTML;
+.period-status {
+    display: block;
+    font-size: 12px;
+    margin-top: 4px;
+    color: #96838c;
 }
 
+/* ФОРМА */
 
-/* =========================
-   АВТООБНОВЛЕНИЕ ФОРМЫ
-========================= */
+.field {
+    margin-bottom: 18px;
+}
 
-[
-    "sleep",
-    "water",
-    "vitamins",
-    "care",
-    "food"
-].forEach(id => {
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
 
-    document.getElementById(id)
-        .addEventListener("input", updateProgressPreview);
+input[type="number"],
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #eadce3;
+    border-radius: 12px;
+    font-size: 16px;
+}
 
-    document.getElementById(id)
-        .addEventListener("change", updateProgressPreview);
-});
+textarea {
+    min-height: 90px;
+    resize: vertical;
+}
 
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-/* =========================
-   ЗАПУСК
-========================= */
+.checkbox input {
+    width: 20px;
+    height: 20px;
+}
 
-render();
+/* КНОПКИ */
 
-</script>
+button {
+    width: 100%;
+    border: none;
+    border-radius: 14px;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+}
 
-</body>
-</html>
+.save {
+    background: #d77da5;
+    color:
