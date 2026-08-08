@@ -119,24 +119,20 @@ button{
   color:#777;
   font-size:14px
 }
-
-.good{
-  color:#8f5b89;
-  font-weight:600
-}
 </style>
 </head>
 
 <body>
 
 <header>
-  <h1>🌸 Моя лучшая версия</h1>
-  <p>Доброе утро, Алена. Сегодня новый шаг.</p>
+<h1>🌸 Моя лучшая версия</h1>
+<p>Доброе утро, Алена. Сегодня новый шаг.</p>
 </header>
 
 <main>
 
 <section class="card">
+
 <h2>🌿 Сегодня</h2>
 
 <div class="grid">
@@ -227,310 +223,359 @@ button{
 
 const KEY = "mlv_v1";
 
+
 function today(){
-  const d = new Date();
-  return d.getFullYear() + "-" +
-    String(d.getMonth()+1).padStart(2,"0") + "-" +
-    String(d.getDate()).padStart(2,"0");
+
+const d = new Date();
+
+return d.getFullYear() + "-" +
+String(d.getMonth()+1).padStart(2,"0") + "-" +
+String(d.getDate()).padStart(2,"0");
+
 }
+
 
 function loadDB(){
 
-  try{
-    const saved = localStorage.getItem(KEY);
+try{
 
-    if(!saved){
-      return {};
-    }
+const saved = localStorage.getItem(KEY);
 
-    const data = JSON.parse(saved);
+if(!saved) return {};
 
-    if(typeof data !== "object" || data === null){
-      return {};
-    }
+const data = JSON.parse(saved);
 
-    return data;
-
-  }catch(e){
-    console.log("Ошибка чтения данных",e);
-    return {};
-  }
+if(typeof data !== "object" || data === null){
+return {};
 }
+
+return data;
+
+}catch(e){
+
+console.log("Ошибка чтения данных",e);
+
+return {};
+
+}
+
+}
+
 
 function saveDB(data){
 
-  try{
-    localStorage.setItem(KEY,JSON.stringify(data));
-    return true;
+try{
 
-  }catch(e){
-    alert("Не удалось сохранить данные.");
-    return false;
-  }
+localStorage.setItem(KEY,JSON.stringify(data));
+
+return true;
+
+}catch(e){
+
+alert("Не удалось сохранить данные.");
+
+return false;
+
+}
+
 }
 
 
 m.oninput = function(){
-  mv.textContent = m.value;
+
+mv.textContent = m.value;
+
 };
 
 
 function getFormData(){
 
-  return {
-    m:Number(m.value),
-    s:Number(s.value) || 0,
-    w:w.checked,
-    v:v.checked,
-    c:c.checked,
-    f:f.checked,
-    n:n.value.trim()
-  };
+return {
+
+m:Number(m.value),
+
+s:Number(s.value) || 0,
+
+w:w.checked,
+
+v:v.checked,
+
+c:c.checked,
+
+f:f.checked,
+
+n:n.value.trim()
+
+};
 
 }
 
+
+/* САМОЕ ВАЖНОЕ:
+после сохранения форма очищается */
+
+function clearForm(){
+
+m.value = 5;
+mv.textContent = "5";
+
+s.value = "";
+
+w.checked = false;
+v.checked = false;
+c.checked = false;
+f.checked = false;
+
+n.value = "";
+
+bar.style.width = "0%";
+pct.textContent = "0%";
+
+}
+
+
+/* Сохранение дня */
 
 function saveDay(){
 
-  const data = loadDB();
-  const date = today();
+const data = loadDB();
 
-  data[date] = getFormData();
+const date = today();
 
-  if(saveDB(data)){
+/*
+Если сегодня уже была запись,
+она просто обновляется.
+Старые дни не трогаются.
+*/
 
-    render();
+data[date] = getFormData();
 
-    alert("🌸 День сохранён!");
+if(saveDB(data)){
 
-  }
+/* Сначала обновляем историю и статистику */
+renderStats();
+renderHistory();
+
+/* Затем очищаем сегодняшнюю форму */
+clearForm();
+
+alert("🌸 День сохранён!");
+
+}
 
 }
 
 
-function loadToday(){
-
-  const data = loadDB();
-  const d = data[today()];
-
-  if(!d){
-    return;
-  }
-
-  m.value = d.m ?? 5;
-  mv.textContent = m.value;
-
-  s.value = d.s ?? "";
-
-  w.checked = !!d.w;
-  v.checked = !!d.v;
-  c.checked = !!d.c;
-  f.checked = !!d.f;
-
-  n.value = d.n || "";
-
-}
-
+/* Прогресс текущего заполнения */
 
 function renderProgress(){
 
-  const data = loadDB();
-  const d = data[today()];
+let completed = 0;
 
-  if(!d){
+if(w.checked) completed++;
+if(v.checked) completed++;
+if(c.checked) completed++;
+if(f.checked) completed++;
+if(n.value.trim()) completed++;
 
-    bar.style.width = "0%";
-    pct.textContent = "0%";
+const percent = completed * 20;
 
-    return;
-  }
-
-  let completed = 0;
-
-  if(d.w) completed++;
-  if(d.v) completed++;
-  if(d.c) completed++;
-  if(d.f) completed++;
-  if(d.n) completed++;
-
-  const percent = completed * 20;
-
-  bar.style.width = percent + "%";
-  pct.textContent = percent + "%";
+bar.style.width = percent + "%";
+pct.textContent = percent + "%";
 
 }
+
+
+w.onchange = renderProgress;
+v.onchange = renderProgress;
+c.onchange = renderProgress;
+f.onchange = renderProgress;
+n.oninput = renderProgress;
 
 
 function renderStats(){
 
-  const data = loadDB();
+const data = loadDB();
 
-  const dates = Object.keys(data)
-    .filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x))
-    .sort()
-    .slice(-7);
+const dates = Object.keys(data)
+.filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x))
+.sort()
+.slice(-7);
 
-  if(!dates.length){
+if(!dates.length){
 
-    stats.innerHTML = "Пока нет данных.";
-    return;
+stats.innerHTML = "Пока нет данных.";
 
-  }
+return;
 
-  let mood = 0;
-  let sleep = 0;
-  let water = 0;
-  let vitamins = 0;
-  let care = 0;
-  let food = 0;
+}
 
-  dates.forEach(date => {
+let mood = 0;
+let sleep = 0;
+let water = 0;
+let vitamins = 0;
+let care = 0;
+let food = 0;
 
-    const d = data[date];
+dates.forEach(date => {
 
-    mood += Number(d.m) || 0;
-    sleep += Number(d.s) || 0;
+const d = data[date];
 
-    if(d.w) water++;
-    if(d.v) vitamins++;
-    if(d.c) care++;
-    if(d.f) food++;
+mood += Number(d.m) || 0;
+sleep += Number(d.s) || 0;
 
-  });
+if(d.w) water++;
+if(d.v) vitamins++;
+if(d.c) care++;
+if(d.f) food++;
 
-  stats.innerHTML =
-    "📅 Дней записано: <b>" + dates.length + "</b><br>" +
+});
 
-    "😊 Среднее настроение: <b>" +
-    (mood / dates.length).toFixed(1) +
-    "/10</b><br>" +
 
-    "😴 Средний сон: <b>" +
-    (sleep / dates.length).toFixed(1) +
-    " ч.</b><br>" +
+stats.innerHTML =
 
-    "💧 Вода: <b>" +
-    water + "/" + dates.length +
-    "</b><br>" +
+"📅 Дней записано: <b>" +
+dates.length +
+"</b><br>" +
 
-    "💊 Витамины: <b>" +
-    vitamins + "/" + dates.length +
-    "</b><br>" +
+"😊 Среднее настроение: <b>" +
+(mood / dates.length).toFixed(1) +
+"/10</b><br>" +
 
-    "💄 Уход: <b>" +
-    care + "/" + dates.length +
-    "</b><br>" +
+"😴 Средний сон: <b>" +
+(sleep / dates.length).toFixed(1) +
+" ч.</b><br>" +
 
-    "🍎 Питание: <b>" +
-    food + "/" + dates.length +
-    "</b>";
+"💧 Вода: <b>" +
+water + "/" + dates.length +
+"</b><br>" +
+
+"💊 Витамины: <b>" +
+vitamins + "/" + dates.length +
+"</b><br>" +
+
+"💄 Уход: <b>" +
+care + "/" + dates.length +
+"</b><br>" +
+
+"🍎 Питание: <b>" +
+food + "/" + dates.length +
+"</b>";
 
 }
 
 
+/* История всех сохранённых дней */
+
 function renderHistory(){
 
-  const data = loadDB();
+const data = loadDB();
 
-  const dates = Object.keys(data)
-    .filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x))
-    .sort()
-    .reverse();
+const dates = Object.keys(data)
+.filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x))
+.sort()
+.reverse();
 
-  if(!dates.length){
+if(!dates.length){
 
-    history.innerHTML = "Пока нет сохранённых дней.";
-    return;
+history.innerHTML = "Пока нет сохранённых дней.";
 
-  }
+return;
 
-  history.innerHTML = dates.map(date => {
+}
 
-    const d = data[date];
+history.innerHTML = dates.map(date => {
 
-    return `
-      <div class="day">
-        <b>🌸 ${date}</b><br>
-        😊 Настроение: ${d.m || 0}/10<br>
-        😴 Сон: ${d.s || 0} ч.<br>
-        💧 Вода: ${d.w ? "✓" : "—"}<br>
-        💊 Витамины: ${d.v ? "✓" : "—"}<br>
-        💄 Уход: ${d.c ? "✓" : "—"}<br>
-        🍎 Питание: ${d.f ? "✓" : "—"}
+const d = data[date];
 
-        ${
-          d.n
-          ? `<br><span class="small">📝 ${escapeHTML(d.n)}</span>`
-          : ""
-        }
-      </div>
-    `;
+return `
 
-  }).join("");
+<div class="day">
+
+<b>🌸 ${date}</b><br>
+
+😊 Настроение: ${d.m || 0}/10<br>
+
+😴 Сон: ${d.s || 0} ч.<br>
+
+💧 Вода: ${d.w ? "✓" : "—"}<br>
+
+💊 Витамины: ${d.v ? "✓" : "—"}<br>
+
+💄 Уход: ${d.c ? "✓" : "—"}<br>
+
+🍎 Питание: ${d.f ? "✓" : "—"}
+
+${
+d.n
+? `<br><span class="small">📝 ${escapeHTML(d.n)}</span>`
+: ""
+}
+
+</div>
+
+`;
+
+}).join("");
 
 }
 
 
 function escapeHTML(text){
 
-  return text
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+return text
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
 
 }
 
 
-function render(){
-
-  loadToday();
-  renderProgress();
-  renderStats();
-  renderHistory();
-
-}
-
+/* Отчёт */
 
 function report(){
 
-  const data = loadDB();
+const data = loadDB();
 
-  const dates = Object.keys(data)
-    .filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x))
-    .sort()
-    .slice(-7);
+const dates = Object.keys(data)
+.filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x))
+.sort()
+.slice(-7);
 
-  if(!dates.length){
+if(!dates.length){
 
-    alert("Сначала сохрани хотя бы один день.");
-    return;
+alert("Сначала сохрани хотя бы один день.");
 
-  }
+return;
 
-  let mood = 0;
-  let sleep = 0;
-  let water = 0;
-  let vitamins = 0;
-  let care = 0;
-  let food = 0;
+}
 
-  dates.forEach(date => {
+let mood = 0;
+let sleep = 0;
+let water = 0;
+let vitamins = 0;
+let care = 0;
+let food = 0;
 
-    const d = data[date];
+dates.forEach(date => {
 
-    mood += Number(d.m) || 0;
-    sleep += Number(d.s) || 0;
+const d = data[date];
 
-    if(d.w) water++;
-    if(d.v) vitamins++;
-    if(d.c) care++;
-    if(d.f) food++;
+mood += Number(d.m) || 0;
+sleep += Number(d.s) || 0;
 
-  });
+if(d.w) water++;
+if(d.v) vitamins++;
+if(d.c) care++;
+if(d.f) food++;
 
-  const text =
+});
+
+
+const text =
+
 `🌸 Моя лучшая версия — отчёт
 
 ${dates[0]} — ${dates[dates.length-1]}
@@ -553,23 +598,35 @@ ${care}/${dates.length}
 🍎 Питание:
 ${food}/${dates.length}`;
 
-  if(navigator.share){
 
-    navigator.share({
-      title:"Моя лучшая версия",
-      text:text
-    });
+if(navigator.share){
 
-  }else{
+navigator.share({
 
-    alert(text);
+title:"Моя лучшая версия",
 
-  }
+text:text
+
+});
+
+}else{
+
+alert(text);
+
+}
 
 }
 
 
-render();
+/* При открытии сайта:
+форма всегда чистая,
+а история и статистика остаются */
+
+clearForm();
+
+renderStats();
+
+renderHistory();
 
 </script>
 
