@@ -3,180 +3,2392 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Моя лучшая версия</title>
 
 <style>
+*{box-sizing:border-box}
 
-* {
-    box-sizing: border-box;
+body{
+    margin:0;
+    padding:16px;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:#fff7fb;
+    color:#4b3b43;
 }
 
-body {
-    margin: 0;
-    padding: 20px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: #fff7fb;
-    color: #4b3b43;
+.app{
+    max-width:620px;
+    margin:auto;
 }
 
-.app {
-    max-width: 600px;
-    margin: auto;
+h1{
+    text-align:center;
+    color:#d77da5;
+    margin:4px 0;
 }
 
-h1 {
-    text-align: center;
-    color: #d77da5;
-    margin-bottom: 5px;
+.date{
+    text-align:center;
+    color:#8f7c85;
+    margin-bottom:16px;
 }
 
-.date {
-    text-align: center;
-    color: #8f7c85;
-    margin-bottom: 20px;
+.card{
+    background:#fff;
+    border-radius:20px;
+    padding:18px;
+    margin-bottom:14px;
+    box-shadow:0 5px 20px rgba(150,100,130,.08);
 }
 
-/* КАРТОЧКИ */
-
-.card {
-    background: white;
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 16px;
-    box-shadow: 0 5px 20px rgba(150,100,130,.08);
+h2,h3{
+    margin-top:0;
 }
 
 /* ПРОГРЕСС */
 
-.progress-title {
-    display: flex;
-    justify-content: space-between;
-    font-weight: 600;
-    margin-bottom: 10px;
+.progress-title{
+    display:flex;
+    justify-content:space-between;
+    font-weight:700;
+    margin-bottom:9px;
 }
 
-.progress-bar {
-    height: 14px;
-    background: #f1e5eb;
-    border-radius: 20px;
-    overflow: hidden;
+.progress-bar{
+    height:14px;
+    background:#f1e5eb;
+    border-radius:20px;
+    overflow:hidden;
 }
 
-.progress-fill {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg,#e99abd,#d77da5);
-    border-radius: 20px;
-    transition: .3s;
+.progress-fill{
+    height:100%;
+    width:0;
+    background:linear-gradient(90deg,#e99abd,#d77da5);
+    border-radius:20px;
+    transition:.3s;
 }
 
-.last-time {
-    margin-top: 9px;
-    font-size: 13px;
-    color: #96838c;
+.last-time,
+.small{
+    margin-top:8px;
+    font-size:13px;
+    color:#95848c;
 }
 
 /* НАПОМИНАНИЕ */
 
-.reminder {
-    background: #fff0f6;
-    border: 1px solid #f4c9da;
-    border-radius: 15px;
-    padding: 14px;
-    margin-top: 15px;
-    line-height: 1.5;
+.reminder{
+    background:#fff0f6;
+    border:1px solid #f4c9da;
+    border-radius:15px;
+    padding:13px;
+    margin-top:14px;
+    line-height:1.5;
 }
 
-.reminder.done {
-    background: #f0faf4;
-    border-color: #c8e8d3;
+.reminder.done{
+    background:#f0faf4;
+    border-color:#c8e8d3;
 }
 
 /* ПЕРИОДЫ */
 
-.periods {
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
-    gap: 10px;
+.periods{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
 }
 
-.period-button {
-    background: #fff;
-    border: 2px solid #eadce3;
-    border-radius: 16px;
-    padding: 14px 8px;
-    font-size: 15px;
-    cursor: pointer;
+.period-button{
+    background:#fff;
+    border:2px solid #eadce3;
+    border-radius:15px;
+    padding:11px 4px;
+    font-size:14px;
+    cursor:pointer;
 }
 
-.period-button.active {
-    border-color: #d77da5;
-    background: #fff0f6;
+.period-button.active{
+    border-color:#d77da5;
+    background:#fff0f6;
 }
 
-.period-button.completed {
-    border-color: #b9dfc6;
-    background: #f2faf5;
+.period-button.completed{
+    border-color:#b9dfc6;
+    background:#f2faf5;
 }
 
-.period-status {
-    display: block;
-    font-size: 12px;
-    margin-top: 4px;
-    color: #96838c;
+.period-icon{
+    font-size:22px;
+    display:block;
+}
+
+.period-status{
+    display:block;
+    font-size:11px;
+    color:#95848c;
+    margin-top:3px;
 }
 
 /* ФОРМА */
 
-.field {
-    margin-bottom: 18px;
+.field{
+    margin-bottom:16px;
 }
 
-label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 8px;
+label{
+    display:block;
+    font-weight:600;
+    margin-bottom:7px;
 }
 
-input[type="number"],
-textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #eadce3;
-    border-radius: 12px;
-    font-size: 16px;
+input[type=number],
+textarea{
+    width:100%;
+    padding:11px;
+    border:1px solid #eadce3;
+    border-radius:12px;
+    font-size:16px;
 }
 
-textarea {
-    min-height: 90px;
-    resize: vertical;
+textarea{
+    min-height:85px;
+    resize:vertical;
 }
 
-.checkbox {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.checkbox{
+    display:flex;
+    align-items:center;
+    gap:10px;
 }
 
-.checkbox input {
-    width: 20px;
-    height: 20px;
+.checkbox input{
+    width:20px;
+    height:20px;
 }
 
 /* КНОПКИ */
 
-button {
-    width: 100%;
-    border: none;
-    border-radius: 14px;
-    padding: 14px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 8px;
+button{
+    width:100%;
+    border:0;
+    border-radius:14px;
+    padding:13px;
+    font-size:15px;
+    font-weight:650;
+    cursor:pointer;
+    margin-top:8px;
 }
 
-.save {
-    background: #d77da5;
-    color:
+.save{
+    background:#d77da5;
+    color:#fff;
+}
+
+.final{
+    background:#8f6a7a;
+    color:#fff;
+}
+
+.secondary{
+    background:#f8eef3;
+    color:#6d5661;
+}
+
+.delete{
+    background:#fff;
+    color:#b45b7d;
+    border:1px solid #e7b9cb;
+}
+
+/* ОТЧЁТ */
+
+.report-entry{
+    padding:13px 0;
+    border-bottom:1px solid #eee2e8;
+}
+
+.report-entry:last-child{
+    border-bottom:0;
+}
+
+.empty{
+    text-align:center;
+    color:#9a8991;
+    padding:8px;
+}
+
+.week-day{
+    padding:12px 0;
+    border-bottom:1px solid #eee2e8;
+}
+
+.week-day:last-child{
+    border-bottom:0;
+}
+
+.badge{
+    display:inline-block;
+    padding:4px 8px;
+    border-radius:10px;
+    background:#f8eef3;
+    font-size:12px;
+    margin:2px;
+}
+
+@media(max-width:430px){
+    .periods{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+    .period-button{
+        font-size:12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<h1>🌸 Моя лучшая версия</h1>
+
+<div class="date" id="currentDate"></div>
+
+
+<!-- ПРОГРЕСС -->
+
+<div class="card">
+
+    <div class="progress-title">
+
+        <span>🌸 Прогресс дня</span>
+
+        <span id="progressPercent">
+            0%
+        </span>
+
+    </div>
+
+    <div class="progress-bar">
+
+        <div
+            class="progress-fill"
+            id="progressFill">
+        </div>
+
+    </div>
+
+    <div
+        class="last-time"
+        id="lastTime">
+
+        🕐 Пока нет заполнений
+
+    </div>
+
+    <div
+        class="reminder"
+        id="reminder">
+
+        🔔
+
+        <strong id="reminderTitle">
+            Начни свой день
+        </strong>
+
+        <div id="remainingItems"></div>
+
+    </div>
+
+</div>
+
+
+<!-- ЧАСТИ ДНЯ -->
+
+<div class="card">
+
+<h3>🕐 Части дня</h3>
+
+<div class="periods">
+
+<button
+    class="period-button"
+    id="period-morning"
+    onclick="selectPeriod('morning')">
+
+    <span class="period-icon">
+        🌅
+    </span>
+
+    Утро
+
+    <span class="period-status">
+        Открыть
+    </span>
+
+</button>
+
+
+<button
+    class="period-button"
+    id="period-day"
+    onclick="selectPeriod('day')">
+
+    <span class="period-icon">
+        ☀️
+    </span>
+
+    День
+
+    <span class="period-status">
+        Открыть
+    </span>
+
+</button>
+
+
+<button
+    class="period-button"
+    id="period-evening"
+    onclick="selectPeriod('evening')">
+
+    <span class="period-icon">
+        🌆
+    </span>
+
+    Вечер
+
+    <span class="period-status">
+        Открыть
+    </span>
+
+</button>
+
+
+<button
+    class="period-button"
+    id="period-night"
+    onclick="selectPeriod('night')">
+
+    <span class="period-icon">
+        🌙
+    </span>
+
+    Ночь
+
+    <span class="period-status">
+        Открыть
+    </span>
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ФОРМА -->
+
+<div class="card">
+
+<h2 id="periodTitle">
+    🌅 Утро
+</h2>
+
+
+<div class="field">
+
+<label>
+    😊 Настроение:
+    <span id="moodValue">5</span>/10
+</label>
+
+<input
+    type="range"
+    id="mood"
+    min="1"
+    max="10"
+    value="5"
+    style="width:100%"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+    😴 Сон
+</label>
+
+<input
+    type="number"
+    id="sleep"
+    min="0"
+    max="24"
+    step="0.5"
+    placeholder="Количество часов"
+>
+
+</div>
+
+
+<div class="field">
+
+<label class="checkbox">
+
+<input
+    type="checkbox"
+    id="water"
+>
+
+💧 Вода
+
+</label>
+
+</div>
+
+
+<div class="field">
+
+<label class="checkbox">
+
+<input
+    type="checkbox"
+    id="vitamins"
+>
+
+💊 Витамины
+
+</label>
+
+</div>
+
+
+<div class="field">
+
+<label class="checkbox">
+
+<input
+    type="checkbox"
+    id="care"
+>
+
+💄 Уход
+
+</label>
+
+</div>
+
+
+<div class="field">
+
+<label class="checkbox">
+
+<input
+    type="checkbox"
+    id="food"
+>
+
+🍎 Питание
+
+</label>
+
+</div>
+
+
+<div class="field">
+
+<label>
+    📝 Заметка
+</label>
+
+<textarea
+    id="note"
+    placeholder="Что хочешь сохранить?"
+></textarea>
+
+</div>
+
+
+<button
+    class="save"
+    onclick="savePeriod()">
+
+    💾 Сохранить этот период
+
+</button>
+
+
+<button
+    class="delete"
+    onclick="deleteLastEntry()">
+
+    🗑️ Удалить предыдущую запись
+
+</button>
+
+</div>
+
+
+<!-- ЗАМЕТКИ -->
+
+<div class="card">
+
+<h3>
+    📝 Все заметки за сегодня
+</h3>
+
+<div id="todayNotes">
+
+    <div class="empty">
+        Пока заметок нет
+    </div>
+
+</div>
+
+</div>
+
+
+<!-- ОТЧЁТ ДНЯ -->
+
+<div class="card">
+
+<h3>
+    📋 Отчёт дня
+</h3>
+
+<div id="report">
+
+    <div class="empty">
+        Пока сохранённых записей нет
+    </div>
+
+</div>
+
+
+<button
+    class="final"
+    onclick="finalizeDay()">
+
+    🌸 Сохранить итоговый отчёт дня
+
+</button>
+
+</div>
+
+
+<!-- ОТЧЁТ ЗА НЕДЕЛЮ -->
+
+<div class="card">
+
+<h3>
+    📊 Отчёт за неделю
+</h3>
+
+<div id="weeklyReport">
+
+    <div class="empty">
+        Собираем последние 7 дней…
+    </div>
+
+</div>
+
+
+<button
+    class="secondary"
+    onclick="copyWeeklyReport()">
+
+    📤 Скопировать недельный отчёт
+
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+const STORAGE_KEY =
+    "best_version_diary_v2";
+
+const OLD_KEY =
+    "best_version_diary";
+
+
+const today =
+    getToday();
+
+
+const periodNames = {
+
+    morning:"🌅 Утро",
+
+    day:"☀️ День",
+
+    evening:"🌆 Вечер",
+
+    night:"🌙 Ночь"
+
+};
+
+
+const periodOrder = [
+
+    "morning",
+
+    "day",
+
+    "evening",
+
+    "night"
+
+];
+
+
+document
+    .getElementById("currentDate")
+    .textContent =
+    formatDate(today);
+
+
+/* =========================
+   ЗАГРУЗКА ДАННЫХ
+========================= */
+
+let data =
+    loadData();
+
+
+let currentDay =
+    ensureDay(
+        data.days[today]
+    );
+
+
+data.days[today] =
+    currentDay;
+
+
+saveData();
+
+
+let selectedPeriod =
+    getCurrentPeriod();
+
+
+/* =========================
+   ДАТА
+========================= */
+
+function getToday(){
+
+    const d =
+        new Date();
+
+    return (
+
+        d.getFullYear()
+        + "-"
+        + String(
+            d.getMonth()+1
+        ).padStart(2,"0")
+        + "-"
+        + String(
+            d.getDate()
+        ).padStart(2,"0")
+
+    );
+
+}
+
+
+function formatDate(date){
+
+    const p =
+        date.split("-");
+
+    return (
+        p[2]
+        + "."
+        + p[1]
+        + "."
+        + p[0]
+    );
+
+}
+
+
+/* =========================
+   ХРАНИЛИЩЕ
+========================= */
+
+function loadData(){
+
+    try{
+
+        let raw =
+            localStorage.getItem(
+                STORAGE_KEY
+            );
+
+
+        if(raw){
+
+            return JSON.parse(raw);
+
+        }
+
+
+        /*
+           Если есть старая версия,
+           пробуем сохранить её данные.
+        */
+
+        raw =
+            localStorage.getItem(
+                OLD_KEY
+            );
+
+
+        if(raw){
+
+            const old =
+                JSON.parse(raw);
+
+            const migrated =
+                migrateOld(old);
+
+            localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify(migrated)
+            );
+
+            return migrated;
+
+        }
+
+    }
+    catch(error){
+
+        console.error(error);
+
+    }
+
+
+    return {
+        days:{}
+    };
+
+}
+
+
+function migrateOld(old){
+
+    const result = {
+        days:{}
+    };
+
+
+    if(
+        !old ||
+        !old.days
+    ){
+
+        return result;
+
+    }
+
+
+    Object
+        .keys(old.days)
+        .forEach(date => {
+
+            const src =
+                old.days[date] || {};
+
+
+            const day =
+                ensureDay({});
+
+
+            if(
+                Array.isArray(
+                    src.entries
+                )
+            ){
+
+                src.entries
+                    .forEach(
+                        (e,index) => {
+
+                            const period =
+                                e.period
+                                ||
+                                periodOrder[
+                                    Math.min(
+                                        index,
+                                        3
+                                    )
+                                ];
+
+
+                            const entry = {
+
+                                ...e,
+
+                                period,
+
+                                id:
+                                    e.id
+                                    ||
+                                    e.timestamp
+                                    ||
+                                    Date.now()
+                                    + index
+
+                            };
+
+
+                            day
+                                .periods[
+                                    period
+                                ] =
+                                entry;
+
+
+                            day.entries
+                                .push(
+                                    entry
+                                );
+
+
+                            if(
+                                entry.note
+                            ){
+
+                                day.notes
+                                    .push({
+
+                                        id:
+                                            entry.id,
+
+                                        text:
+                                            entry.note,
+
+                                        period,
+
+                                        time:
+                                            entry.time
+                                            ||
+                                            ""
+
+                                    });
+
+                            }
+
+                        }
+                    );
+
+            }
+
+
+            day.finalized =
+                !!src.finalized;
+
+
+            result.days[date] =
+                day;
+
+        });
+
+
+    return result;
+
+}
+
+
+function ensureDay(day){
+
+    day =
+        day || {};
+
+
+    day.periods =
+        day.periods || {};
+
+
+    day.entries =
+        Array.isArray(
+            day.entries
+        )
+        ?
+        day.entries
+        :
+        [];
+
+
+    day.notes =
+        Array.isArray(
+            day.notes
+        )
+        ?
+        day.notes
+        :
+        [];
+
+
+    day.finalized =
+        !!day.finalized;
+
+
+    return day;
+
+}
+
+
+function saveData(){
+
+    localStorage.setItem(
+
+        STORAGE_KEY,
+
+        JSON.stringify(data)
+
+    );
+
+}
+
+
+/* =========================
+   ВРЕМЯ
+========================= */
+
+function getCurrentPeriod(){
+
+    const hour =
+        new Date()
+        .getHours();
+
+
+    if(
+        hour >= 5 &&
+        hour < 12
+    ){
+
+        return "morning";
+
+    }
+
+
+    if(
+        hour >= 12 &&
+        hour < 17
+    ){
+
+        return "day";
+
+    }
+
+
+    if(
+        hour >= 17 &&
+        hour < 23
+    ){
+
+        return "evening";
+
+    }
+
+
+    return "night";
+
+}
+
+
+/* =========================
+   ПЕРИОД
+========================= */
+
+function selectPeriod(period){
+
+    selectedPeriod =
+        period;
+
+
+    loadPeriod();
+
+    updatePeriodButtons();
+
+}
+
+
+function updatePeriodButtons(){
+
+    periodOrder
+        .forEach(
+            period => {
+
+                const button =
+                    document
+                    .getElementById(
+                        "period-"
+                        + period
+                    );
+
+
+                button
+                    .classList
+                    .toggle(
+                        "active",
+                        period ===
+                        selectedPeriod
+                    );
+
+
+                button
+                    .classList
+                    .toggle(
+                        "completed",
+                        !!currentDay
+                            .periods[
+                                period
+                            ]
+                    );
+
+
+                button
+                    .querySelector(
+                        ".period-status"
+                    )
+                    .textContent =
+                    currentDay
+                        .periods[
+                            period
+                        ]
+                    ?
+                    "✓ Заполнено"
+                    :
+                    "Открыть";
+
+            }
+        );
+
+}
+
+
+/* =========================
+   ЗАГРУЗКА ПЕРИОДА
+========================= */
+
+function loadPeriod(){
+
+    document
+        .getElementById(
+            "periodTitle"
+        )
+        .textContent =
+        periodNames[
+            selectedPeriod
+        ];
+
+
+    const saved =
+        currentDay
+            .periods[
+                selectedPeriod
+            ];
+
+
+    if(!saved){
+
+        clearForm();
+
+        return;
+
+    }
+
+
+    document
+        .getElementById(
+            "mood"
+        )
+        .value =
+        saved.mood ?? 5;
+
+
+    document
+        .getElementById(
+            "moodValue"
+        )
+        .textContent =
+        saved.mood ?? 5;
+
+
+    document
+        .getElementById(
+            "sleep"
+        )
+        .value =
+        saved.sleep ?? "";
+
+
+    document
+        .getElementById(
+            "water"
+        )
+        .checked =
+        !!saved.water;
+
+
+    document
+        .getElementById(
+            "vitamins"
+        )
+        .checked =
+        !!saved.vitamins;
+
+
+    document
+        .getElementById(
+            "care"
+        )
+        .checked =
+        !!saved.care;
+
+
+    document
+        .getElementById(
+            "food"
+        )
+        .checked =
+        !!saved.food;
+
+
+    /*
+       При открытии сохранённого периода
+       поле заметки остаётся пустым,
+       чтобы новая заметка добавилась отдельно.
+    */
+
+    document
+        .getElementById(
+            "note"
+        )
+        .value =
+        "";
+
+}
+
+
+/* =========================
+   ОЧИСТКА
+========================= */
+
+function clearForm(){
+
+    document
+        .getElementById(
+            "mood"
+        )
+        .value = 5;
+
+
+    document
+        .getElementById(
+            "moodValue"
+        )
+        .textContent = 5;
+
+
+    document
+        .getElementById(
+            "sleep"
+        )
+        .value = "";
+
+
+    document
+        .getElementById(
+            "water"
+        )
+        .checked = false;
+
+
+    document
+        .getElementById(
+            "vitamins"
+        )
+        .checked = false;
+
+
+    document
+        .getElementById(
+            "care"
+        )
+        .checked = false;
+
+
+    document
+        .getElementById(
+            "food"
+        )
+        .checked = false;
+
+
+    document
+        .getElementById(
+            "note"
+        )
+        .value = "";
+
+}
+
+
+/* =========================
+   ФОРМА
+========================= */
+
+function getFormData(){
+
+    return {
+
+        mood:
+            Number(
+                document
+                .getElementById(
+                    "mood"
+                )
+                .value
+            ),
+
+        sleep:
+            document
+            .getElementById(
+                "sleep"
+            )
+            .value,
+
+        water:
+            document
+            .getElementById(
+                "water"
+            )
+            .checked,
+
+        vitamins:
+            document
+            .getElementById(
+                "vitamins"
+            )
+            .checked,
+
+        care:
+            document
+            .getElementById(
+                "care"
+            )
+            .checked,
+
+        food:
+            document
+            .getElementById(
+                "food"
+            )
+            .checked
+
+    };
+
+}
+
+
+/* =========================
+   СОХРАНЕНИЕ ПЕРИОДА
+========================= */
+
+function savePeriod(){
+
+    const form =
+        getFormData();
+
+
+    const note =
+        document
+        .getElementById(
+            "note"
+        )
+        .value
+        .trim();
+
+
+    const now =
+        new Date();
+
+
+    const time =
+        now.toLocaleTimeString(
+            "ru-RU",
+            {
+                hour:"2-digit",
+                minute:"2-digit"
+            }
+        );
+
+
+    const entry = {
+
+        id:
+            Date.now(),
+
+        period:
+            selectedPeriod,
+
+        ...form,
+
+        note,
+
+        time,
+
+        timestamp:
+            Date.now()
+
+    };
+
+
+    /*
+       Если период уже был сохранён,
+       заменяем его.
+    */
+
+    const old =
+        currentDay
+        .periods[
+            selectedPeriod
+        ];
+
+
+    if(old){
+
+        currentDay.entries =
+            currentDay.entries
+            .filter(
+                e =>
+                e.id !== old.id
+                &&
+                e.period !==
+                selectedPeriod
+            );
+
+
+        currentDay.notes =
+            currentDay.notes
+            .filter(
+                n =>
+                n.id !== old.id
+            );
+
+    }
+
+
+    currentDay
+        .periods[
+            selectedPeriod
+        ] =
+        entry;
+
+
+    currentDay
+        .entries
+        .push(
+            entry
+        );
+
+
+    if(note){
+
+        currentDay
+            .notes
+            .push({
+
+                id:
+                    entry.id,
+
+                text:
+                    note,
+
+                period:
+                    selectedPeriod,
+
+                time
+
+            });
+
+    }
+
+
+    currentDay.finalized =
+        false;
+
+
+    saveData();
+
+
+    clearForm();
+
+
+    renderAll();
+
+
+    alert(
+        periodNames[
+            selectedPeriod
+        ]
+        +
+        " сохранено 🌸"
+    );
+
+}
+
+
+/* =========================
+   ПРОГРЕСС
+========================= */
+
+function calculateProgress(){
+
+    const count =
+        periodOrder
+        .filter(
+            p =>
+            !!currentDay
+            .periods[p]
+        )
+        .length;
+
+
+    if(
+        currentDay.finalized
+    ){
+
+        return 100;
+
+    }
+
+
+    return count * 20;
+
+}
+
+
+function updateProgress(){
+
+    const progress =
+        calculateProgress();
+
+
+    document
+        .getElementById(
+            "progressPercent"
+        )
+        .textContent =
+        progress + "%";
+
+
+    document
+        .getElementById(
+            "progressFill"
+        )
+        .style
+        .width =
+        progress + "%";
+
+
+    const last =
+        currentDay
+        .entries[
+            currentDay.entries.length - 1
+        ];
+
+
+    document
+        .getElementById(
+            "lastTime"
+        )
+        .textContent =
+        last
+        ?
+        `🕐 Последнее заполнение: ${last.time}`
+        :
+        "🕐 Пока нет заполнений";
+
+
+    updateReminder();
+
+}
+
+
+/* =========================
+   НАПОМИНАНИЕ
+========================= */
+
+function updateReminder(){
+
+    const reminder =
+        document
+        .getElementById(
+            "reminder"
+        );
+
+
+    const title =
+        document
+        .getElementById(
+            "reminderTitle"
+        );
+
+
+    const rest =
+        document
+        .getElementById(
+            "remainingItems"
+        );
+
+
+    if(
+        currentDay.finalized
+    ){
+
+        reminder
+            .classList
+            .add("done");
+
+
+        title.textContent =
+            "День завершён 🎉";
+
+
+        rest.textContent =
+            "Итоговый отчёт сохранён.";
+
+
+        return;
+
+    }
+
+
+    const missing =
+        periodOrder
+        .filter(
+            p =>
+            !currentDay
+            .periods[p]
+        );
+
+
+    if(!missing.length){
+
+        reminder
+            .classList
+            .add("done");
+
+
+        title.textContent =
+            "Все периоды заполнены ❤️";
+
+
+        rest.textContent =
+            "Теперь можно сохранить итоговый отчёт.";
+
+
+        return;
+
+    }
+
+
+    reminder
+        .classList
+        .remove("done");
+
+
+    title.textContent =
+        "Сегодня ещё не всё заполнено";
+
+
+    rest.textContent =
+        "Осталось: "
+        +
+        missing
+        .map(
+            p =>
+            periodNames[p]
+        )
+        .join(" • ");
+
+}
+
+
+/* =========================
+   УДАЛЕНИЕ
+========================= */
+
+function deleteLastEntry(){
+
+    if(
+        !currentDay
+        .entries.length
+    ){
+
+        alert(
+            "Удалять пока нечего 🌸"
+        );
+
+        return;
+
+    }
+
+
+    if(
+        !confirm(
+            "Удалить только последнюю запись?\n\n"
+            +
+            "Остальные дни и периоды останутся."
+        )
+    ){
+
+        return;
+
+    }
+
+
+    const last =
+        currentDay
+        .entries
+        .pop();
+
+
+    if(
+        currentDay
+        .periods[
+            last.period
+        ]
+        &&
+        currentDay
+        .periods[
+            last.period
+        ].id ===
+        last.id
+    ){
+
+        delete currentDay
+            .periods[
+                last.period
+            ];
+
+    }
+
+
+    currentDay.notes =
+        currentDay
+        .notes
+        .filter(
+            n =>
+            n.id !==
+            last.id
+        );
+
+
+    currentDay.finalized =
+        false;
+
+
+    saveData();
+
+
+    renderAll();
+
+
+    alert(
+        "Последняя запись удалена 🗑️"
+    );
+
+}
+
+
+/* =========================
+   ЗАМЕТКИ
+========================= */
+
+function renderNotes(){
+
+    const container =
+        document
+        .getElementById(
+            "todayNotes"
+        );
+
+
+    if(
+        !currentDay
+        .notes.length
+    ){
+
+        container.innerHTML =
+            '<div class="empty">Пока заметок нет</div>';
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        currentDay
+        .notes
+        .map(
+            n =>
+            `
+
+            <div class="report-entry">
+
+                📝
+                ${escapeHtml(
+                    n.text
+                )}
+
+                <div class="small">
+
+                    ${periodNames[
+                        n.period
+                    ]}
+
+                    • ${n.time}
+
+                </div>
+
+            </div>
+
+            `
+        )
+        .join("");
+
+}
+
+
+/* =========================
+   ОТЧЁТ ДНЯ
+========================= */
+
+function renderReport(){
+
+    const container =
+        document
+        .getElementById(
+            "report"
+        );
+
+
+    if(
+        !currentDay
+        .entries.length
+    ){
+
+        container.innerHTML =
+            '<div class="empty">Пока сохранённых записей нет</div>';
+
+        return;
+
+    }
+
+
+    const entries =
+        periodOrder
+        .map(
+            p =>
+            currentDay
+            .periods[p]
+        )
+        .filter(Boolean);
+
+
+    container.innerHTML =
+        entries
+        .map(
+            e =>
+            `
+
+            <div class="report-entry">
+
+                <strong>
+                    ${periodNames[
+                        e.period
+                    ]}
+                </strong>
+
+                <div class="small">
+                    🕐 ${e.time}
+                </div>
+
+                <p>
+                    😊 Настроение:
+                    ${e.mood}/10
+                </p>
+
+                <p>
+                    😴 Сон:
+                    ${e.sleep || "—"} ч
+                </p>
+
+                <span class="badge">
+                    💧 ${e.water ? "✓" : "—"}
+                </span>
+
+                <span class="badge">
+                    💊 ${e.vitamins ? "✓" : "—"}
+                </span>
+
+                <span class="badge">
+                    💄 ${e.care ? "✓" : "—"}
+                </span>
+
+                <span class="badge">
+                    🍎 ${e.food ? "✓" : "—"}
+                </span>
+
+                ${
+                    e.note
+                    ?
+                    `
+                    <p>
+                        📝
+                        ${escapeHtml(
+                            e.note
+                        )}
+                    </p>
+                    `
+                    :
+                    ""
+                }
+
+            </div>
+
+            `
+        )
+        .join("");
+
+}
+
+
+/* =========================
+   ФИНАЛЬНЫЙ ОТЧЁТ
+========================= */
+
+function finalizeDay(){
+
+    if(
+        periodOrder.some(
+            p =>
+            !currentDay
+            .periods[p]
+        )
+    ){
+
+        alert(
+            "Сначала заполни все четыре периода 🌸\n\n"
+            +
+            "Утро → День → Вечер → Ночь"
+        );
+
+        return;
+
+    }
+
+
+    currentDay.finalized =
+        true;
+
+
+    saveData();
+
+
+    renderAll();
+
+
+    alert(
+        "🌸 Итоговый отчёт дня сохранён!\n\n"
+        +
+        "Прогресс: 100%"
+    );
+
+}
+
+
+/* =========================
+   НЕДЕЛЬНЫЙ ОТЧЁТ
+========================= */
+
+function getLast7Dates(){
+
+    const dates = [];
+
+    const d =
+        new Date();
+
+
+    for(
+        let i = 6;
+        i >= 0;
+        i--
+    ){
+
+        const x =
+            new Date(d);
+
+
+        x.setDate(
+            d.getDate() - i
+        );
+
+
+        dates.push(
+
+            `${x.getFullYear()}-`
+            +
+            `${String(
+                x.getMonth()+1
+            ).padStart(2,"0")}-`
+            +
+            `${String(
+                x.getDate()
+            ).padStart(2,"0")}`
+
+        );
+
+    }
+
+
+    return dates;
+
+}
+
+
+function weeklyText(){
+
+    const dates =
+        getLast7Dates();
+
+
+    let out =
+        "🌸 МОЯ ЛУЧШАЯ ВЕРСИЯ — ОТЧЁТ ЗА НЕДЕЛЮ\n";
+
+
+    out +=
+        `${formatDate(
+            dates[0]
+        )} — `
+        +
+        `${formatDate(
+            dates[6]
+        )}\n\n`;
+
+
+    dates.forEach(
+        date => {
+
+            const day =
+                data.days[date];
+
+
+            out +=
+                `📅 ${formatDate(
+                    date
+                )}\n`;
+
+
+            if(
+                !day
+                ||
+                !day.entries
+                ||
+                !day.entries.length
+            ){
+
+                out +=
+                    "— Записей нет\n\n";
+
+                return;
+
+            }
+
+
+            const entries =
+                periodOrder
+                .map(
+                    p =>
+                    day.periods?.[p]
+                )
+                .filter(Boolean);
+
+
+            const moods =
+                entries
+                .map(
+                    e =>
+                    e.mood
+                )
+                .filter(
+                    v =>
+                    typeof v ===
+                    "number"
+                );
+
+
+            const sleeps =
+                entries
+                .map(
+                    e =>
+                    parseFloat(
+                        e.sleep
+                    )
+                )
+                .filter(
+                    v =>
+                    !isNaN(v)
+                );
+
+
+            const avgMood =
+                moods.length
+                ?
+                (
+                    moods.reduce(
+                        (a,b) =>
+                        a+b,
+                        0
+                    )
+                    /
+                    moods.length
+                ).toFixed(1)
+                :
+                "—";
+
+
+            const sleep =
+                sleeps.length
+                ?
+                sleeps[
+                    sleeps.length-1
+                ]
+                + " ч"
+                :
+                "—";
+
+
+            const water =
+                entries.some(
+                    e =>
+                    e.water
+                )
+                ?
+                "✓"
+                :
+                "—";
+
+
+            const vitamins =
+                entries.some(
+                    e =>
+                    e.vitamins
+                )
+                ?
+                "✓"
+                :
+                "—";
+
+
+            const care =
+                entries.some(
+                    e =>
+                    e.care
+                )
+                ?
+                "✓"
+                :
+                "—";
+
+
+            const food =
+                entries.some(
+                    e =>
+                    e.food
+                )
+                ?
+                "✓"
+                :
+                "—";
+
+
+            const progress =
+                day.finalized
+                ?
+                100
+                :
+                entries.length * 20;
+
+
+            out +=
+                `🌸 Прогресс: ${progress}%\n`;
+
+
+            out +=
+                `😊 Среднее настроение: ${avgMood}/10\n`;
+
+
+            out +=
+                `😴 Сон: ${sleep}\n`;
+
+
+            out +=
+                `💧 Вода: ${water}  `
+                +
+                `💊 Витамины: ${vitamins}\n`;
+
+
+            out +=
+                `💄 Уход: ${care}  `
+                +
+                `🍎 Питание: ${food}\n`;
+
+
+            const notes =
+                (day.notes || [])
+                .map(
+                    n =>
+                    `• ${n.text}`
+                )
+                .join("\n");
+
+
+            if(notes){
+
+                out +=
+                    `📝 Заметки:\n`
+                    +
+                    notes
+                    +
+                    "\n";
+
+            }
+
+
+            out += "\n";
+
+        }
+    );
+
+
+    return out;
+
+}
+
+
+/* =========================
+   ОТОБРАЖЕНИЕ НЕДЕЛИ
+========================= */
+
+function renderWeeklyReport(){
+
+    const container =
+        document
+        .getElementById(
+            "weeklyReport"
+        );
+
+
+    const dates =
+        getLast7Dates();
+
+
+    const has =
+        dates.some(
+            d =>
+            data.days[d]
+            ?.entries
+            ?.length
+        );
+
+
+    if(!has){
+
+        container.innerHTML =
+            '<div class="empty">За последние 7 дней пока нет записей.</div>';
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        dates
+        .map(
+            date => {
+
+                const day =
+                    data.days[date];
+
+
+                const entries =
+                    day?.entries || [];
+
+
+                const progress =
+                    day?.finalized
+                    ?
+                    100
+                    :
+                    Math.min(
+                        entries.length * 20,
+                        80
+                    );
+
+
+                const notes =
+                    (
+                        day?.notes
+                        || []
+                    ).length;
+
+
+                return `
+
+                <div class="week-day">
+
+                    <strong>
+                        📅
+                        ${formatDate(
+                            date
+                        )}
+                    </strong>
+
+                    <br>
+
+                    <span class="badge">
+                        Прогресс ${progress}%
+                    </span>
+
+                    <span class="badge">
+                        Записей ${entries.length}
+                    </span>
+
+                    <span class="badge">
+                        Заметок ${notes}
+                    </span>
+
+                </div>
+
+                `;
+
+            }
+        )
+        .join("");
+
+}
+
+
+/* =========================
+   КОПИРОВАНИЕ НЕДЕЛИ
+========================= */
+
+async function copyWeeklyReport(){
+
+    const text =
+        weeklyText();
+
+
+    try{
+
+        await navigator
+            .clipboard
+            .writeText(
+                text
+            );
+
+
+        alert(
+            "📤 Недельный отчёт скопирован!\n\n"
+            +
+            "Теперь можешь отправить его Лере ❤️"
+        );
+
+    }
+    catch(error){
+
+        prompt(
+            "Скопируй этот отчёт:",
+            text
+        );
+
+    }
+
+}
+
+
+/* =========================
+   ЗАЩИТА ТЕКСТА
+========================= */
+
+function escapeHtml(text){
+
+    const div =
+        document
+        .createElement(
+            "div"
+        );
+
+
+    div.textContent =
+        text;
+
+
+    return div.innerHTML;
+
+}
+
+
+/* =========================
+   НАСТРОЕНИЕ
+========================= */
+
+document
+    .getElementById(
+        "mood"
+    )
+    .addEventListener(
+        "input",
+        event => {
+
+            document
+                .getElementById(
+                    "moodValue"
+                )
+                .textContent =
+                event.target.value;
+
+        }
+    );
+
+
+/* =========================
+   ЗАПУСК
+========================= */
+
+loadPeriod();
+
+renderAll();
+
+</script>
+
+</body>
+</html>
