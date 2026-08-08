@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#d7a8cf">
+<link rel="manifest" href="manifest.webmanifest">
 <title>Моя лучшая версия</title>
 
 <style>
@@ -58,13 +59,12 @@ input[type=range]{
 }
 
 input[type=number]{
-  width:100%;
-  box-sizing:border-box;
-  margin-top:8px;
-  padding:10px;
-  border:1px solid #e5dce5;
+  width:90px;
+  padding:8px;
+  border:1px solid #ddd;
   border-radius:10px;
-  font:inherit
+  font-size:16px;
+  box-sizing:border-box
 }
 
 textarea{
@@ -100,8 +100,7 @@ button{
   height:100%;
   width:0;
   background:#c58bbd;
-  border-radius:20px;
-  transition:.3s
+  border-radius:20px
 }
 
 .stat{
@@ -115,9 +114,25 @@ button{
   margin:10px 0
 }
 
+.entry{
+  padding:10px 0;
+  border-bottom:1px solid #e8dfe7
+}
+
+.entry:last-child{
+  border-bottom:0
+}
+
 .small{
-  color:#777;
-  font-size:14px
+  color:#8b7d89;
+  font-size:13px
+}
+
+.success{
+  text-align:center;
+  color:#9a6793;
+  font-weight:600;
+  margin:10px 0
 }
 </style>
 </head>
@@ -144,7 +159,7 @@ button{
 
 <label>
 😴 Сон
-<input id="s" type="number" min="0" max="24" step="0.5" placeholder="часов">
+<input id="s" type="number" min="0" max="24" step=".5" placeholder="часов">
 </label>
 
 </div>
@@ -173,14 +188,18 @@ button{
 
 <br><br>
 
-<button onclick="saveDay()">🌸 Сохранить день</button>
+<button onclick="save()">
+Сохранить запись
+</button>
+
+<div id="message"></div>
 
 </section>
 
 
 <section class="card">
 
-<h2>📊 Прогресс дня</h2>
+<h2>📊 Прогресс текущей записи</h2>
 
 <div class="progress">
 <div class="bar" id="bar"></div>
@@ -195,24 +214,15 @@ button{
 
 <h2>📈 Последние 7 дней</h2>
 
-<div id="stats" class="stat">
+<div id="stats">
 Пока нет данных.
-</div>
-
-</section>
-
-
-<section class="card">
-
-<h2>📅 История</h2>
-
-<div id="history">
-Пока нет сохранённых дней.
 </div>
 
 <br>
 
-<button onclick="report()">📤 Создать отчёт</button>
+<button onclick="report()">
+📤 Создать отчёт
+</button>
 
 </section>
 
@@ -221,412 +231,354 @@ button{
 
 <script>
 
-const KEY = "mlv_v1";
+const K = "mlv_v2";
 
+const D = () => new Date().toISOString().slice(0,10);
 
-function today(){
-
-const d = new Date();
-
-return d.getFullYear() + "-" +
-String(d.getMonth()+1).padStart(2,"0") + "-" +
-String(d.getDate()).padStart(2,"0");
-
-}
-
-
-function loadDB(){
-
-try{
-
-const saved = localStorage.getItem(KEY);
-
-if(!saved) return {};
-
-const data = JSON.parse(saved);
-
-if(typeof data !== "object" || data === null){
-return {};
-}
-
-return data;
-
-}catch(e){
-
-console.log("Ошибка чтения данных",e);
-
-return {};
-
-}
-
-}
-
-
-function saveDB(data){
-
-try{
-
-localStorage.setItem(KEY,JSON.stringify(data));
-
-return true;
-
-}catch(e){
-
-alert("Не удалось сохранить данные.");
-
-return false;
-
-}
-
-}
-
-
-m.oninput = function(){
-
-mv.textContent = m.value;
-
+const db = () => {
+  try{
+    return JSON.parse(localStorage.getItem(K) || "{}");
+  }catch(e){
+    return {};
+  }
 };
 
 
-function getFormData(){
+/* ПЕРЕНОС СТАРЫХ ДАННЫХ */
 
-return {
+function migrateOldData(){
 
-m:Number(m.value),
+  const oldKey = "mlv_v1";
+  const old = localStorage.getItem(oldKey);
 
-s:Number(s.value) || 0,
+  if(!old) return;
 
-w:w.checked,
+  try{
 
-v:v.checked,
+    const oldData = JSON.parse(old);
+    let current = db();
 
-c:c.checked,
+    Object.keys(oldData).forEach(date => {
 
-f:f.checked,
+      if(!current[date]){
+        current[date] = [];
+      }
 
-n:n.value.trim()
+      if(!Array.isArray(current[date])){
+        current[date] = [current[date]];
+      }
 
-};
+      current[date].push({
+        ...oldData[date],
+        time:"Старая запись"
+      });
 
+    });
+
+    localStorage.setItem(K,JSON.stringify(current));
+
+  }catch(e){
+    console.log("Ошибка переноса старых данных",e);
+  }
 }
 
 
-/* САМОЕ ВАЖНОЕ:
-после сохранения форма очищается */
+/* НАСТРОЙКА НАСТРОЕНИЯ */
+
+m.oninput = () => {
+  mv.textContent = m.value;
+  updateProgress();
+};
+
+
+/* ПРОГРЕСС */
+
+function updateProgress(){
+
+  const values = [
+    w.checked,
+    v.checked,
+    c.checked,
+    f.checked,
+    !!n.value.trim(),
+    !!s.value
+  ];
+
+  const done = values.filter(Boolean).length;
+
+  const percent = Math.round(done / values.length * 100);
+
+  bar.style.width = percent + "%";
+  pct.textContent = percent + "%";
+}
+
+
+/* ОЧИСТКА ФОРМЫ */
 
 function clearForm(){
 
-m.value = 5;
-mv.textContent = "5";
+  m.value = 5;
+  mv.textContent = 5;
 
-s.value = "";
+  s.value = "";
 
-w.checked = false;
-v.checked = false;
-c.checked = false;
-f.checked = false;
+  w.checked = false;
+  v.checked = false;
+  c.checked = false;
+  f.checked = false;
 
-n.value = "";
+  n.value = "";
 
-bar.style.width = "0%";
-pct.textContent = "0%";
+  updateProgress();
+}
+
+
+/* СОХРАНЕНИЕ */
+
+function save(){
+
+  let data = db();
+  const date = D();
+
+  if(!data[date]){
+    data[date] = [];
+  }
+
+  if(!Array.isArray(data[date])){
+    data[date] = [data[date]];
+  }
+
+  const entry = {
+
+    time:new Date().toLocaleTimeString("ru-RU",{
+      hour:"2-digit",
+      minute:"2-digit"
+    }),
+
+    m:+m.value,
+
+    s:+s.value || 0,
+
+    w:w.checked,
+
+    v:v.checked,
+
+    c:c.checked,
+
+    f:f.checked,
+
+    n:n.value.trim()
+
+  };
+
+  data[date].push(entry);
+
+  localStorage.setItem(K,JSON.stringify(data));
+
+  render();
+
+  clearForm();
+
+  message.innerHTML =
+    '<div class="success">🌸 Запись сохранена. Форма очищена — можно продолжать день.</div>';
+
+  setTimeout(()=>{
+    message.innerHTML="";
+  },3000);
 
 }
 
 
-/* Сохранение дня */
+/* СТАТИСТИКА */
 
-function saveDay(){
+function render(){
 
-const data = loadDB();
+  const data = db();
 
-const date = today();
+  const dates = Object.keys(data)
+    .sort()
+    .slice(-7);
 
-/*
-Если сегодня уже была запись,
-она просто обновляется.
-Старые дни не трогаются.
-*/
+  if(!dates.length){
 
-data[date] = getFormData();
+    stats.innerHTML="Пока нет данных.";
 
-if(saveDB(data)){
+    return;
+  }
 
-/* Сначала обновляем историю и статистику */
-renderStats();
-renderHistory();
+  let totalMood = 0;
+  let moodCount = 0;
 
-/* Затем очищаем сегодняшнюю форму */
-clearForm();
+  let water = 0;
+  let vitamins = 0;
+  let care = 0;
+  let food = 0;
+  let sleep = 0;
+  let sleepCount = 0;
+  let entries = 0;
 
-alert("🌸 День сохранён!");
+  dates.forEach(date=>{
 
-}
+    let day = data[date];
 
-}
+    if(!Array.isArray(day)){
+      day = [day];
+    }
 
+    day.forEach(q=>{
 
-/* Прогресс текущего заполнения */
+      entries++;
 
-function renderProgress(){
+      totalMood += Number(q.m) || 0;
+      moodCount++;
 
-let completed = 0;
+      if(q.w) water++;
+      if(q.v) vitamins++;
+      if(q.c) care++;
+      if(q.f) food++;
 
-if(w.checked) completed++;
-if(v.checked) completed++;
-if(c.checked) completed++;
-if(f.checked) completed++;
-if(n.value.trim()) completed++;
+      if(q.s){
+        sleep += Number(q.s);
+        sleepCount++;
+      }
 
-const percent = completed * 20;
+    });
 
-bar.style.width = percent + "%";
-pct.textContent = percent + "%";
+  });
 
-}
+  const averageMood =
+    moodCount
+    ? (totalMood/moodCount).toFixed(1)
+    : "0";
 
+  const averageSleep =
+    sleepCount
+    ? (sleep/sleepCount).toFixed(1)
+    : "0";
 
-w.onchange = renderProgress;
-v.onchange = renderProgress;
-c.onchange = renderProgress;
-f.onchange = renderProgress;
-n.oninput = renderProgress;
+  stats.innerHTML = `
 
+    😊 Среднее настроение:
+    <b>${averageMood}/10</b>
+    <br>
 
-function renderStats(){
+    😴 Средний сон:
+    <b>${averageSleep} ч</b>
+    <br>
 
-const data = loadDB();
+    💧 Вода:
+    <b>${water}</b>
+    раз
+    <br>
 
-const dates = Object.keys(data)
-.filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x))
-.sort()
-.slice(-7);
+    💊 Витамины:
+    <b>${vitamins}</b>
+    раз
+    <br>
 
-if(!dates.length){
+    💄 Уход:
+    <b>${care}</b>
+    раз
+    <br>
 
-stats.innerHTML = "Пока нет данных.";
+    🍎 Питание:
+    <b>${food}</b>
+    раз
+    <br>
 
-return;
+    📝 Сохранено записей:
+    <b>${entries}</b>
 
-}
-
-let mood = 0;
-let sleep = 0;
-let water = 0;
-let vitamins = 0;
-let care = 0;
-let food = 0;
-
-dates.forEach(date => {
-
-const d = data[date];
-
-mood += Number(d.m) || 0;
-sleep += Number(d.s) || 0;
-
-if(d.w) water++;
-if(d.v) vitamins++;
-if(d.c) care++;
-if(d.f) food++;
-
-});
-
-
-stats.innerHTML =
-
-"📅 Дней записано: <b>" +
-dates.length +
-"</b><br>" +
-
-"😊 Среднее настроение: <b>" +
-(mood / dates.length).toFixed(1) +
-"/10</b><br>" +
-
-"😴 Средний сон: <b>" +
-(sleep / dates.length).toFixed(1) +
-" ч.</b><br>" +
-
-"💧 Вода: <b>" +
-water + "/" + dates.length +
-"</b><br>" +
-
-"💊 Витамины: <b>" +
-vitamins + "/" + dates.length +
-"</b><br>" +
-
-"💄 Уход: <b>" +
-care + "/" + dates.length +
-"</b><br>" +
-
-"🍎 Питание: <b>" +
-food + "/" + dates.length +
-"</b>";
+  `;
 
 }
 
 
-/* История всех сохранённых дней */
-
-function renderHistory(){
-
-const data = loadDB();
-
-const dates = Object.keys(data)
-.filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x))
-.sort()
-.reverse();
-
-if(!dates.length){
-
-history.innerHTML = "Пока нет сохранённых дней.";
-
-return;
-
-}
-
-history.innerHTML = dates.map(date => {
-
-const d = data[date];
-
-return `
-
-<div class="day">
-
-<b>🌸 ${date}</b><br>
-
-😊 Настроение: ${d.m || 0}/10<br>
-
-😴 Сон: ${d.s || 0} ч.<br>
-
-💧 Вода: ${d.w ? "✓" : "—"}<br>
-
-💊 Витамины: ${d.v ? "✓" : "—"}<br>
-
-💄 Уход: ${d.c ? "✓" : "—"}<br>
-
-🍎 Питание: ${d.f ? "✓" : "—"}
-
-${
-d.n
-? `<br><span class="small">📝 ${escapeHTML(d.n)}</span>`
-: ""
-}
-
-</div>
-
-`;
-
-}).join("");
-
-}
-
-
-function escapeHTML(text){
-
-return text
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
-
-}
-
-
-/* Отчёт */
+/* ОТЧЁТ */
 
 function report(){
 
-const data = loadDB();
+  const data = db();
 
-const dates = Object.keys(data)
-.filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x))
-.sort()
-.slice(-7);
+  const dates = Object.keys(data)
+    .sort()
+    .slice(-7);
 
-if(!dates.length){
+  if(!dates.length){
 
-alert("Сначала сохрани хотя бы один день.");
+    alert("Сначала сохрани хотя бы одну запись.");
 
-return;
+    return;
+  }
 
-}
-
-let mood = 0;
-let sleep = 0;
-let water = 0;
-let vitamins = 0;
-let care = 0;
-let food = 0;
-
-dates.forEach(date => {
-
-const d = data[date];
-
-mood += Number(d.m) || 0;
-sleep += Number(d.s) || 0;
-
-if(d.w) water++;
-if(d.v) vitamins++;
-if(d.c) care++;
-if(d.f) food++;
-
-});
-
-
-const text =
-
+  let text =
 `🌸 Моя лучшая версия — отчёт
 
 ${dates[0]} — ${dates[dates.length-1]}
 
-😊 Настроение:
-${(mood / dates.length).toFixed(1)}/10
+`;
 
-😴 Средний сон:
-${(sleep / dates.length).toFixed(1)} ч.
+  dates.forEach(date=>{
 
-💧 Вода:
-${water}/${dates.length}
+    let day = data[date];
 
-💊 Витамины:
-${vitamins}/${dates.length}
+    if(!Array.isArray(day)){
+      day = [day];
+    }
 
-💄 Уход:
-${care}/${dates.length}
+    text += `\n📅 ${date}\n`;
 
-🍎 Питание:
-${food}/${dates.length}`;
+    day.forEach((q,index)=>{
+
+      text += `\nЗапись ${index+1}`;
+
+      if(q.time){
+        text += ` — ${q.time}`;
+      }
+
+      text += `\n😊 Настроение: ${q.m}/10`;
+      text += `\n😴 Сон: ${q.s || "—"} ч`;
+      text += `\n💧 Вода: ${q.w ? "✓" : "—"}`;
+      text += `\n💊 Витамины: ${q.v ? "✓" : "—"}`;
+      text += `\n💄 Уход: ${q.c ? "✓" : "—"}`;
+      text += `\n🍎 Питание: ${q.f ? "✓" : "—"}`;
+
+      if(q.n){
+        text += `\n📝 ${q.n}`;
+      }
+
+      text += "\n";
+
+    });
+
+    text += "\n--------------------\n";
+
+  });
 
 
-if(navigator.share){
+  if(navigator.share){
 
-navigator.share({
+    navigator.share({
+      title:"Моя лучшая версия",
+      text:text
+    });
 
-title:"Моя лучшая версия",
+  }else{
 
-text:text
+    alert(text);
 
-});
-
-}else{
-
-alert(text);
+  }
 
 }
 
-}
 
+/* ЗАПУСК */
 
-/* При открытии сайта:
-форма всегда чистая,
-а история и статистика остаются */
+migrateOldData();
 
-clearForm();
+render();
 
-renderStats();
-
-renderHistory();
+updateProgress();
 
 </script>
 
