@@ -1,1 +1,577 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#d7a8cf"><link rel="manifest" href="manifest.webmanifest"><title>Моя лучшая версия</title><style>body{margin:0;background:#fbf5fa;color:#3b3340;font-family:-apple-system,BlinkMacSystemFont,sans-serif}header{padding:28px 20px;background:linear-gradient(145deg,#e8c8e4,#f8dce8);border-radius:0 0 28px 28px}h1{margin:0;font-size:30px}main{max-width:620px;margin:auto;padding:16px}.card{background:#fff;border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 4px 18px #d8c5d433}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{display:block;background:#faf6fa;border-radius:14px;padding:13px;margin:8px 0}input[type=range]{width:100%}textarea{width:100%;min-height:90px;border:0;border-radius:14px;background:#faf6fa;padding:12px;font:inherit;box-sizing:border-box}button{width:100%;border:0;border-radius:14px;padding:14px;background:#d7a8cf;color:white;font-size:16px;font-weight:600}.progress{height:12px;background:#eee4ed;border-radius:20px;overflow:hidden}.bar{height:100%;width:0;background:#c58bbd;border-radius:20px}.stat{line-height:1.8}</style></head><body><header><h1>🌸 Моя лучшая версия</h1><p>Доброе утро, Алена. Сегодня новый шаг.</p></header><main><section class="card"><h2>🌿 Сегодня</h2><div class="grid"><label>😊 Настроение <b id="mv">5</b>/10<input id="m" type="range" min="1" max="10" value="5"></label><label>😴 Сон<input id="s" type="number" min="0" max="24" step=".5" placeholder="часов"></label></div><label><input id="w" type="checkbox"> 💧 Вода</label><label><input id="v" type="checkbox"> 💊 Витамины</label><label><input id="c" type="checkbox"> 💄 Уход</label><label><input id="f" type="checkbox"> 🍎 Питание</label><textarea id="n" placeholder="📝 Мысли дня"></textarea><br><br><button onclick="save()">Сохранить день</button></section><section class="card"><h2>📊 Прогресс дня</h2><div class="progress"><div class="bar" id="bar"></div></div><p id="pct">0%</p></section><section class="card"><h2>📈 Последние 7 дней</h2><div id="stats" class="stat">Пока нет данных.</div><br><button onclick="report()">📤 Создать отчёт</button></section></main><script>const K="mlv_v1",D=()=>new Date().toISOString().slice(0,10),db=()=>JSON.parse(localStorage.getItem(K)||"{}");m.oninput=()=>mv.textContent=m.value;function save(){let x=db(),d=D();x[d]={m:+m.value,s:+s.value||0,w:w.checked,v:v.checked,c:c.checked,f:f.checked,n:n.value};localStorage.setItem(K,JSON.stringify(x));render();alert("🌸 День сохранён")}function render(){let x=db(),d=x[D()];if(d){m.value=d.m;mv.textContent=d.m;s.value=d.s;w.checked=d.w;v.checked=d.v;c.checked=d.c;f.checked=d.f;n.value=d.n||""}let done=d?[d.w,d.v,d.c,d.f,!!d.n].filter(Boolean).length:0;bar.style.width=done*20+"%";pct.textContent=done*20+"%";let ks=Object.keys(x).sort().slice(-7);if(!ks.length)return;let a=[0,0,0,0,0];ks.forEach(k=>{let q=x[k];a[0]+=q.m;a[1]+=q.w;a[2]+=q.v;a[3]+=q.c;a[4]+=q.f});stats.innerHTML=`😊 Среднее настроение: <b>${(a[0]/ks.length).toFixed(1)}/10</b><br>💧 Вода: ${a[1]}/${ks.length}<br>💊 Витамины: ${a[2]}/${ks.length}<br>💄 Уход: ${a[3]}/${ks.length}<br>🍎 Питание: ${a[4]}/${ks.length}`}function report(){let x=db(),ks=Object.keys(x).sort().slice(-7);if(!ks.length)return alert("Сначала сохрани день.");let a=[0,0,0,0,0];ks.forEach(k=>{let q=x[k];a[0]+=q.m;a[1]+=q.w;a[2]+=q.v;a[3]+=q.c;a[4]+=q.f});let t=`🌸 Моя лучшая версия — отчёт\n${ks[0]} — ${ks.at(-1)}\n\n😊 Настроение: ${(a[0]/ks.length).toFixed(1)}/10\n💧 Вода: ${a[1]}/${ks.length}\n💊 Витамины: ${a[2]}/${ks.length}\n💄 Уход: ${a[3]}/${ks.length}\n🍎 Питание: ${a[4]}/${ks.length}`;navigator.share?navigator.share({title:"Моя лучшая версия",text:t}):alert(t)}render()</script></body></html>
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#d7a8cf">
+<title>Моя лучшая версия</title>
+
+<style>
+body{
+  margin:0;
+  background:#fbf5fa;
+  color:#3b3340;
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif
+}
+
+header{
+  padding:28px 20px;
+  background:linear-gradient(145deg,#e8c8e4,#f8dce8);
+  border-radius:0 0 28px 28px
+}
+
+h1{
+  margin:0;
+  font-size:30px
+}
+
+main{
+  max-width:620px;
+  margin:auto;
+  padding:16px
+}
+
+.card{
+  background:#fff;
+  border-radius:20px;
+  padding:18px;
+  margin:14px 0;
+  box-shadow:0 4px 18px #d8c5d433
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px
+}
+
+label{
+  display:block;
+  background:#faf6fa;
+  border-radius:14px;
+  padding:13px;
+  margin:8px 0
+}
+
+input[type=range]{
+  width:100%
+}
+
+input[type=number]{
+  width:100%;
+  box-sizing:border-box;
+  margin-top:8px;
+  padding:10px;
+  border:1px solid #e5dce5;
+  border-radius:10px;
+  font:inherit
+}
+
+textarea{
+  width:100%;
+  min-height:90px;
+  border:0;
+  border-radius:14px;
+  background:#faf6fa;
+  padding:12px;
+  font:inherit;
+  box-sizing:border-box
+}
+
+button{
+  width:100%;
+  border:0;
+  border-radius:14px;
+  padding:14px;
+  background:#d7a8cf;
+  color:white;
+  font-size:16px;
+  font-weight:600
+}
+
+.progress{
+  height:12px;
+  background:#eee4ed;
+  border-radius:20px;
+  overflow:hidden
+}
+
+.bar{
+  height:100%;
+  width:0;
+  background:#c58bbd;
+  border-radius:20px;
+  transition:.3s
+}
+
+.stat{
+  line-height:1.8
+}
+
+.day{
+  background:#faf6fa;
+  border-radius:14px;
+  padding:12px;
+  margin:10px 0
+}
+
+.small{
+  color:#777;
+  font-size:14px
+}
+
+.good{
+  color:#8f5b89;
+  font-weight:600
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🌸 Моя лучшая версия</h1>
+  <p>Доброе утро, Алена. Сегодня новый шаг.</p>
+</header>
+
+<main>
+
+<section class="card">
+<h2>🌿 Сегодня</h2>
+
+<div class="grid">
+
+<label>
+😊 Настроение <b id="mv">5</b>/10
+<input id="m" type="range" min="1" max="10" value="5">
+</label>
+
+<label>
+😴 Сон
+<input id="s" type="number" min="0" max="24" step="0.5" placeholder="часов">
+</label>
+
+</div>
+
+<label>
+<input id="w" type="checkbox">
+💧 Вода
+</label>
+
+<label>
+<input id="v" type="checkbox">
+💊 Витамины
+</label>
+
+<label>
+<input id="c" type="checkbox">
+💄 Уход
+</label>
+
+<label>
+<input id="f" type="checkbox">
+🍎 Питание
+</label>
+
+<textarea id="n" placeholder="📝 Мысли дня"></textarea>
+
+<br><br>
+
+<button onclick="saveDay()">🌸 Сохранить день</button>
+
+</section>
+
+
+<section class="card">
+
+<h2>📊 Прогресс дня</h2>
+
+<div class="progress">
+<div class="bar" id="bar"></div>
+</div>
+
+<p id="pct">0%</p>
+
+</section>
+
+
+<section class="card">
+
+<h2>📈 Последние 7 дней</h2>
+
+<div id="stats" class="stat">
+Пока нет данных.
+</div>
+
+</section>
+
+
+<section class="card">
+
+<h2>📅 История</h2>
+
+<div id="history">
+Пока нет сохранённых дней.
+</div>
+
+<br>
+
+<button onclick="report()">📤 Создать отчёт</button>
+
+</section>
+
+</main>
+
+
+<script>
+
+const KEY = "mlv_v1";
+
+function today(){
+  const d = new Date();
+  return d.getFullYear() + "-" +
+    String(d.getMonth()+1).padStart(2,"0") + "-" +
+    String(d.getDate()).padStart(2,"0");
+}
+
+function loadDB(){
+
+  try{
+    const saved = localStorage.getItem(KEY);
+
+    if(!saved){
+      return {};
+    }
+
+    const data = JSON.parse(saved);
+
+    if(typeof data !== "object" || data === null){
+      return {};
+    }
+
+    return data;
+
+  }catch(e){
+    console.log("Ошибка чтения данных",e);
+    return {};
+  }
+}
+
+function saveDB(data){
+
+  try{
+    localStorage.setItem(KEY,JSON.stringify(data));
+    return true;
+
+  }catch(e){
+    alert("Не удалось сохранить данные.");
+    return false;
+  }
+}
+
+
+m.oninput = function(){
+  mv.textContent = m.value;
+};
+
+
+function getFormData(){
+
+  return {
+    m:Number(m.value),
+    s:Number(s.value) || 0,
+    w:w.checked,
+    v:v.checked,
+    c:c.checked,
+    f:f.checked,
+    n:n.value.trim()
+  };
+
+}
+
+
+function saveDay(){
+
+  const data = loadDB();
+  const date = today();
+
+  data[date] = getFormData();
+
+  if(saveDB(data)){
+
+    render();
+
+    alert("🌸 День сохранён!");
+
+  }
+
+}
+
+
+function loadToday(){
+
+  const data = loadDB();
+  const d = data[today()];
+
+  if(!d){
+    return;
+  }
+
+  m.value = d.m ?? 5;
+  mv.textContent = m.value;
+
+  s.value = d.s ?? "";
+
+  w.checked = !!d.w;
+  v.checked = !!d.v;
+  c.checked = !!d.c;
+  f.checked = !!d.f;
+
+  n.value = d.n || "";
+
+}
+
+
+function renderProgress(){
+
+  const data = loadDB();
+  const d = data[today()];
+
+  if(!d){
+
+    bar.style.width = "0%";
+    pct.textContent = "0%";
+
+    return;
+  }
+
+  let completed = 0;
+
+  if(d.w) completed++;
+  if(d.v) completed++;
+  if(d.c) completed++;
+  if(d.f) completed++;
+  if(d.n) completed++;
+
+  const percent = completed * 20;
+
+  bar.style.width = percent + "%";
+  pct.textContent = percent + "%";
+
+}
+
+
+function renderStats(){
+
+  const data = loadDB();
+
+  const dates = Object.keys(data)
+    .filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x))
+    .sort()
+    .slice(-7);
+
+  if(!dates.length){
+
+    stats.innerHTML = "Пока нет данных.";
+    return;
+
+  }
+
+  let mood = 0;
+  let sleep = 0;
+  let water = 0;
+  let vitamins = 0;
+  let care = 0;
+  let food = 0;
+
+  dates.forEach(date => {
+
+    const d = data[date];
+
+    mood += Number(d.m) || 0;
+    sleep += Number(d.s) || 0;
+
+    if(d.w) water++;
+    if(d.v) vitamins++;
+    if(d.c) care++;
+    if(d.f) food++;
+
+  });
+
+  stats.innerHTML =
+    "📅 Дней записано: <b>" + dates.length + "</b><br>" +
+
+    "😊 Среднее настроение: <b>" +
+    (mood / dates.length).toFixed(1) +
+    "/10</b><br>" +
+
+    "😴 Средний сон: <b>" +
+    (sleep / dates.length).toFixed(1) +
+    " ч.</b><br>" +
+
+    "💧 Вода: <b>" +
+    water + "/" + dates.length +
+    "</b><br>" +
+
+    "💊 Витамины: <b>" +
+    vitamins + "/" + dates.length +
+    "</b><br>" +
+
+    "💄 Уход: <b>" +
+    care + "/" + dates.length +
+    "</b><br>" +
+
+    "🍎 Питание: <b>" +
+    food + "/" + dates.length +
+    "</b>";
+
+}
+
+
+function renderHistory(){
+
+  const data = loadDB();
+
+  const dates = Object.keys(data)
+    .filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x))
+    .sort()
+    .reverse();
+
+  if(!dates.length){
+
+    history.innerHTML = "Пока нет сохранённых дней.";
+    return;
+
+  }
+
+  history.innerHTML = dates.map(date => {
+
+    const d = data[date];
+
+    return `
+      <div class="day">
+        <b>🌸 ${date}</b><br>
+        😊 Настроение: ${d.m || 0}/10<br>
+        😴 Сон: ${d.s || 0} ч.<br>
+        💧 Вода: ${d.w ? "✓" : "—"}<br>
+        💊 Витамины: ${d.v ? "✓" : "—"}<br>
+        💄 Уход: ${d.c ? "✓" : "—"}<br>
+        🍎 Питание: ${d.f ? "✓" : "—"}
+
+        ${
+          d.n
+          ? `<br><span class="small">📝 ${escapeHTML(d.n)}</span>`
+          : ""
+        }
+      </div>
+    `;
+
+  }).join("");
+
+}
+
+
+function escapeHTML(text){
+
+  return text
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+function render(){
+
+  loadToday();
+  renderProgress();
+  renderStats();
+  renderHistory();
+
+}
+
+
+function report(){
+
+  const data = loadDB();
+
+  const dates = Object.keys(data)
+    .filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x))
+    .sort()
+    .slice(-7);
+
+  if(!dates.length){
+
+    alert("Сначала сохрани хотя бы один день.");
+    return;
+
+  }
+
+  let mood = 0;
+  let sleep = 0;
+  let water = 0;
+  let vitamins = 0;
+  let care = 0;
+  let food = 0;
+
+  dates.forEach(date => {
+
+    const d = data[date];
+
+    mood += Number(d.m) || 0;
+    sleep += Number(d.s) || 0;
+
+    if(d.w) water++;
+    if(d.v) vitamins++;
+    if(d.c) care++;
+    if(d.f) food++;
+
+  });
+
+  const text =
+`🌸 Моя лучшая версия — отчёт
+
+${dates[0]} — ${dates[dates.length-1]}
+
+😊 Настроение:
+${(mood / dates.length).toFixed(1)}/10
+
+😴 Средний сон:
+${(sleep / dates.length).toFixed(1)} ч.
+
+💧 Вода:
+${water}/${dates.length}
+
+💊 Витамины:
+${vitamins}/${dates.length}
+
+💄 Уход:
+${care}/${dates.length}
+
+🍎 Питание:
+${food}/${dates.length}`;
+
+  if(navigator.share){
+
+    navigator.share({
+      title:"Моя лучшая версия",
+      text:text
+    });
+
+  }else{
+
+    alert(text);
+
+  }
+
+}
+
+
+render();
+
+</script>
+
+</body>
+</html>
